@@ -1,0 +1,105 @@
+Esta aplicação usa um banco de dados em memória, chamado HSQLDB. 
+Isso é para facilitar o andamento do curso, e não termos que nos preocupar nesse momento em instalar MySql ou coisa do tipo.
+
+Para criar as tabelas, acesse a seguinte URL: http://localhost:8080/contas/tabelas. Ele deu a mensagem de sucesso?
+
+
+
+======================================================
+CHAME NO BROWSER A URL A SEGUIR PARA CRIAR O BANCO EM MEMORIA:http://localhost:8080/contas/tabelas
+
+http://localhost:8080/contas/olaMundoSpring
+
+http://localhost:8080/contas/tabelas //==> CRIA UMA TABELA EM MEMORIA
+
+http://localhost:8080/contas/form
+
+http://localhost:8080/contas/listaContas
+
+======================================================
+
+PROCURE VALIDAR TANTO NO JAVASCRIPT QUANTO NO CODIGO JAVA SEJA USANDO BEANVALIDATION OU PROGRAMATICAMENTE NO JAVA. UMA VEZ QUE O JAVASCRIPT PODE SER DESATIVADO NO PELO BROWSER.
+ALTERNATIVA DE VALIDACAO: Uma alternativa para isso é usar a especificação de Bean Validation, que existe desde o Java EE 6.
+
+Muitos desenvolvedores gostam de fazer validação via Javascript, ou seja, no cliente, e com isso,
+abrem mão da validação do lado do servidor (como a que fizemos). O que você acha disso?
+A validação no cliente é interessante, pois é bastante amigável ao usuário.
+Porém a validação no servidor é importantíssima. É ela que vai garantir que nenhum dado sujo seja salvo no banco de dados. 
+Sabemos que o usuário pode facilmente desativar o Javascript do browser, ou mesmo fazer uma requisição para o seu servidor na mão. 
+Ou seja, validação server-side é obrigatória!
+
+======================================================
+
+src/ValidationMessages.properties ==> o arquivo de mensagens de erro deve ter este nome
+
+Como a classe Conta é um Java Bean, e possui getters e setters, tudo funcionará.
+
+=======================================================
+<script type="text/javascript">
+
+	function deuCerto(dadosDaResposta){ /* montando uma url dinamicamente  -  requisicao ajax com jquery */
+	  alert("Conta paga com sucesso!!!");
+	}
+	
+	function pagaAgora(id){ /* montando uma url dinamicamente  -  requisicao ajax com jquery - Ajax trabalha de forma assincrona logo o usuario nao vera a tela piscar */
+	  //alert(1);
+	  $.get("pagaConta?id="+id, deuCerto); //passando a funcao "function deuCerto(dadosDaResposta)" como parametro
+	  //alert(2);
+	  /* deuCerto eh uma funcao de callback uma vez que a mesma eh passada como parametro */
+	  /* a funcao deuCerto sera executada na resposta da requisicao ou seja ao voltar do servidor para o browser */
+	}
+	
+</script>
+===================================================
+
+<mvc:default-servlet-handler/> 
+	
+	<!-- ISTO FAZ COM QUE O SPRING NAO MONITORE O QUE ESTIVER NA PASTA resources EMBORA TENHAMOS CONFIGURADO O SPRING PARA TRATAR QUALQUER 
+	     REQUISCAO A PARTIR DE "/". VEJA O ARQUIVO web.xml
+	
+	<mvc:default-servlet-handler/>  OU
+	
+	<mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/images/**" location="/images/" />
+	
+	-->   
+	
+=====================================================
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+						http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+						http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+						
+	<context:component-scan base-package="br.com.caelum.contas" />
+	<mvc:annotation-driven />
+	
+	<mvc:default-servlet-handler/> 
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<!-- AS NOVAS VERSOES DO SPRING MVC JA POSSUEM UM CONVERSOR AUTOMATICO PARA NOSSOS ENUMS -->
+	<!-- 
+	<bean id="conversionService"
+          class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="br.com.caelum.contas.StringToEnumConverterFactory"/>
+            </list>
+        </property>
+    </bean>
+	-->
+	
+</beans>
+
+
